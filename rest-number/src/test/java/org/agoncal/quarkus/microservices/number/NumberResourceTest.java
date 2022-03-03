@@ -11,10 +11,10 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
 @QuarkusTest
-public class NumberResourceTest
+class NumberResourceTest
 {
     @Test
-    public void shouldGenerateIsbnNumbers()
+    void shouldGenerateIsbnNumbers()
     {
         given().when()
                 .get("/api/numbers")

@@ -8,7 +8,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -80,13 +82,24 @@ public class BookResource
 
     private void saveBookOnDisk(Book book) throws IOException
     {
-        String bookJson = JsonbBuilder.create()
-                .toJson(book);
-        String booksDir = "books";
-        FileSystem fileSystem = FileSystems.getDefault();
-        Files.createDirectories(fileSystem.getPath(booksDir));
-        java.nio.file.Path path = fileSystem.getPath(booksDir, "book-" + Instant.now()
-                .toEpochMilli() + ".json");
-        Files.write(path, bookJson.getBytes());
+        try (Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true)))
+        {
+            String booksDir = "books";
+            FileSystem fileSystem = FileSystems.getDefault();
+            Files.createDirectories(fileSystem.getPath(booksDir));
+            java.nio.file.Path path = fileSystem.getPath(booksDir, "book-" + Instant.now()
+                    .toEpochMilli() + ".json");
+            Files.write(path, jsonb.toJson(book)
+                    .getBytes());
+        }
+        catch (IOException ex)
+        {
+            logger.error("Exception thrown", ex);
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            logger.error("Exception thrown", ex);
+        }
     }
 }

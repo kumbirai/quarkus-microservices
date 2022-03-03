@@ -7,11 +7,11 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-public class BookResourceTest
+class BookResourceTest
 {
 
     @Test
-    public void testHelloEndpoint()
+    void testHelloEndpoint()
     {
         given()
                 .when()
