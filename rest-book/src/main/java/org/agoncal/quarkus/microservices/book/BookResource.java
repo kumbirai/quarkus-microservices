@@ -18,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -28,9 +27,8 @@ import java.time.Instant;
 @Tag(name = "Book REST Endpoint")
 public class BookResource
 {
-    @Inject
     @RestClient
-    NumberProxy proxy;
+    NumberProxy numberProxy;
 
     @Inject
     Logger logger;
@@ -39,13 +37,13 @@ public class BookResource
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Operation(summary = "Creates a new book")
-    @Retry(maxRetries = 1,
-            delay = 2000)
+    @Retry(maxRetries = 3,
+            delay = 500)
     @Fallback(fallbackMethod = "fallbackOnCreatingABook")
     public Response createABook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("year") int yearOfPublication, @FormParam("genre") String genre)
     {
         Book book = Book.builder()
-                .isbn13(proxy.generateIsbnNumbers()
+                .isbn13(numberProxy.generateIsbnNumbers()
                                 .getIsbn13())
                 .title(title)
                 .author(author)
@@ -59,8 +57,7 @@ public class BookResource
                 .build();
     }
 
-    public Response fallbackOnCreatingABook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("year") int yearOfPublication, @FormParam("genre") String genre) throws
-                                                                                                                                                                                              IOException
+    public Response fallbackOnCreatingABook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("year") int yearOfPublication, @FormParam("genre") String genre)
     {
         Book book = Book.builder()
                 .isbn13("Will be set later")
@@ -71,16 +68,25 @@ public class BookResource
                 .creationDate(Instant.now())
                 .build();
 
-        saveBookOnDisk(book);
-
-        logger.warn("Book saved on disk: " + book);
+        try
+        {
+            saveBookOnDisk(book);
+            logger.warn("Book saved on disk: " + book);
+        }
+        catch (Exception ex)
+        {
+            logger.error("Exception caught", ex);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
+                    .entity(ex)
+                    .build();
+        }
 
         return Response.status(Response.Status.PARTIAL_CONTENT.getStatusCode())
                 .entity(book)
                 .build();
     }
 
-    private void saveBookOnDisk(Book book) throws IOException
+    private void saveBookOnDisk(Book book) throws Exception
     {
         try (Jsonb jsonb = JsonbBuilder.create(new JsonbConfig().withFormatting(true)))
         {
@@ -91,15 +97,6 @@ public class BookResource
                     .toEpochMilli() + ".json");
             Files.write(path, jsonb.toJson(book)
                     .getBytes());
-        }
-        catch (IOException ex)
-        {
-            logger.error("Exception thrown", ex);
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            logger.error("Exception thrown", ex);
         }
     }
 }

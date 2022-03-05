@@ -13,6 +13,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="quarkus-microservices" target="1.5" />
       <module name="rest-book" target="11" />
       <module name="rest-book-client" target="11" />
       <module name="rest-number" target="11" />
