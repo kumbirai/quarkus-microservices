@@ -2,6 +2,8 @@ package com.kumbirai.udemy.quarkus.microservices;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,14 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static java.util.Map.entry;
 
 public class BookClient
 {
-	private static final Logger LOGGER = Logger.getLogger(BookClient.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(BookClient.class);
 
 	private static final HttpClient httpClient = HttpClient.newBuilder()
 			.version(HttpClient.Version.HTTP_1_1)
@@ -63,8 +63,10 @@ public class BookClient
 									.genre()));
 
 			var requestBody = new ObjectMapper().writeValueAsString(values);
-			LOGGER.log(Level.INFO,
-					requestBody);
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug(requestBody);
+			}
 
 			var request = HttpRequest.newBuilder()
 					.uri(URI.create("http://localhost:8702/api/books"))
@@ -73,9 +75,11 @@ public class BookClient
 					.POST(ofFormData(values))
 					.build();
 
-			LOGGER.log(Level.INFO,
-					"request: {0}",
-					request);
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("request: {}",
+						request);
+			}
 
 			HttpResponse<String> response = httpClient.send(request,
 					HttpResponse.BodyHandlers.ofString());
@@ -88,16 +92,22 @@ public class BookClient
 							.append(":")
 							.append(v)
 							.append(System.lineSeparator()));
-			LOGGER.log(Level.INFO,
-					sb::toString);
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug(sb.toString());
+			}
 			// print status code
-			LOGGER.log(Level.INFO,
-					"statusCode: {0}",
-					response.statusCode());
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug("statusCode: {}",
+						response.statusCode());
+			}
 
 			// print response body
-			LOGGER.log(Level.INFO,
-					response::body);
+			if (LOG.isDebugEnabled())
+			{
+				LOG.debug(response.body());
+			}
 		}
 	}
 }
