@@ -36,11 +36,9 @@ public class BookClient
 			{
 				builder.append("&");
 			}
-			builder.append(URLEncoder.encode(entry.getKey(),
-					StandardCharsets.UTF_8));
+			builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
 			builder.append("=");
-			builder.append(URLEncoder.encode(entry.getValue(),
-					StandardCharsets.UTF_8));
+			builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
 		}
 		return HttpRequest.BodyPublishers.ofString(builder.toString());
 	}
@@ -50,17 +48,10 @@ public class BookClient
 		Faker faker = new Faker();
 		for (int i = 1; i <= 100000; i++)
 		{
-			var values = Map.ofEntries(entry("title",
-							faker.book()
-									.title()),
-					entry("author",
-							faker.name()
-									.nameWithMiddle()),
-					entry("year",
-							String.valueOf(2012 + new Random().nextInt(10))),
-					entry("genre",
-							faker.book()
-									.genre()));
+			var values = Map.ofEntries(entry("title", faker.book()
+					.title()), entry("author", faker.name()
+					.nameWithMiddle()), entry("year", String.valueOf(2012 + new Random().nextInt(10))), entry("genre", faker.book()
+					.genre()));
 
 			var requestBody = new ObjectMapper().writeValueAsString(values);
 			if (LOG.isDebugEnabled())
@@ -70,19 +61,16 @@ public class BookClient
 
 			var request = HttpRequest.newBuilder()
 					.uri(URI.create("http://localhost:8702/api/books"))
-					.header("Content-Type",
-							"application/x-www-form-urlencoded")
+					.header("Content-Type", "application/x-www-form-urlencoded")
 					.POST(ofFormData(values))
 					.build();
 
 			if (LOG.isDebugEnabled())
 			{
-				LOG.debug("request: {}",
-						request);
+				LOG.debug("request: {}", request);
 			}
 
-			HttpResponse<String> response = httpClient.send(request,
-					HttpResponse.BodyHandlers.ofString());
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
 			// print response headers
 			var headers = response.headers();
@@ -99,8 +87,7 @@ public class BookClient
 			// print status code
 			if (LOG.isDebugEnabled())
 			{
-				LOG.debug("statusCode: {}",
-						response.statusCode());
+				LOG.debug("statusCode: {}", response.statusCode());
 			}
 
 			// print response body

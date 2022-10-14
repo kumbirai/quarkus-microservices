@@ -55,8 +55,7 @@ public class MavenWrapperDownloader
 
 		// If the maven-wrapper.properties exists, read it and check if it contains a custom
 		// wrapperUrl parameter.
-		File mavenWrapperPropertyFile = new File(baseDirectory,
-				MAVEN_WRAPPER_PROPERTIES_PATH);
+		File mavenWrapperPropertyFile = new File(baseDirectory, MAVEN_WRAPPER_PROPERTIES_PATH);
 		String url = DEFAULT_DOWNLOAD_URL;
 		if (mavenWrapperPropertyFile.exists())
 		{
@@ -66,8 +65,7 @@ public class MavenWrapperDownloader
 				mavenWrapperPropertyFileInputStream = new FileInputStream(mavenWrapperPropertyFile);
 				Properties mavenWrapperProperties = new Properties();
 				mavenWrapperProperties.load(mavenWrapperPropertyFileInputStream);
-				url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL,
-						url);
+				url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL, url);
 			}
 			catch (IOException e)
 			{
@@ -90,8 +88,7 @@ public class MavenWrapperDownloader
 		}
 		System.out.println("- Downloading from: " + url);
 
-		File outputFile = new File(baseDirectory.getAbsolutePath(),
-				MAVEN_WRAPPER_JAR_PATH);
+		File outputFile = new File(baseDirectory.getAbsolutePath(), MAVEN_WRAPPER_JAR_PATH);
 		if (!outputFile.getParentFile()
 				.exists())
 		{
@@ -105,8 +102,7 @@ public class MavenWrapperDownloader
 		System.out.println("- Downloading to: " + outputFile.getAbsolutePath());
 		try
 		{
-			downloadFileFromURL(url,
-					outputFile);
+			downloadFileFromURL(url, outputFile);
 			System.out.println("Done");
 			System.exit(0);
 		}
@@ -130,8 +126,7 @@ public class MavenWrapperDownloader
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication()
 				{
-					return new PasswordAuthentication(username,
-							password);
+					return new PasswordAuthentication(username, password);
 				}
 			});
 		}
@@ -140,9 +135,7 @@ public class MavenWrapperDownloader
 		rbc = Channels.newChannel(website.openStream());
 		FileOutputStream fos = new FileOutputStream(destination);
 		fos.getChannel()
-				.transferFrom(rbc,
-						0,
-						Long.MAX_VALUE);
+				.transferFrom(rbc, 0, Long.MAX_VALUE);
 		fos.close();
 		rbc.close();
 	}

@@ -11,16 +11,16 @@ import javax.ws.rs.core.Application;
 
 @ApplicationPath("/")
 @OpenAPIDefinition(info = @Info(title = "Number API",
-		description = "Generates ISBN book numbers",
-		version = "1.0",
-		contact = @Contact(name = "KumbiraiM",
-				url = "http://www.kumbirai.com/")),
-		externalDocs = @ExternalDocumentation(url = "https://github.com/agoncal/agoncal-course-quarkus-microservices",
-				description = "All the Microservice course code"),
-		tags = { @Tag(name = "api",
-				description = "Public API that can be used by anybody"),
-				@Tag(name = "numbers",
-						description = "Anybody interested in numbers") })
+								description = "Generates ISBN book numbers",
+								version = "1.0",
+								contact = @Contact(name = "KumbiraiM",
+												   url = "http://www.kumbirai.com/")),
+				   externalDocs = @ExternalDocumentation(url = "https://github.com/agoncal/agoncal-course-quarkus-microservices",
+														 description = "All the Microservice course code"),
+				   tags = { @Tag(name = "api",
+								 description = "Public API that can be used by anybody"),
+							@Tag(name = "numbers",
+								 description = "Anybody interested in numbers") })
 public class NumberMicroservice extends Application
 {
 }

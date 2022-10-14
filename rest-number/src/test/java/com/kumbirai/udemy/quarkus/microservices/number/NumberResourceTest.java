@@ -20,10 +20,8 @@ class NumberResourceTest
 				.get("/api/numbers")
 				.then()
 				.statusCode(Response.Status.OK.getStatusCode())
-				.body("isbn_13",
-						startsWith("13-"))
-				.body("isbn_10",
-						startsWith("10-"))
+				.body("isbn_13", startsWith("13-"))
+				.body("isbn_10", startsWith("10-"))
 				.body(not(hasKey("generationDate")));
 	}
 }

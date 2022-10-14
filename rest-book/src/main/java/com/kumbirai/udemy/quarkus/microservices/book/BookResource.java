@@ -38,13 +38,13 @@ public class BookResource
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Operation(summary = "Creates a new book")
 	@Retry(maxRetries = 3,
-			delay = 500)
+		   delay = 500)
 	@Fallback(fallbackMethod = "fallbackOnCreatingABook")
 	public Response createABook(@FormParam("title") String title, @FormParam("author") String author, @FormParam("year") int yearOfPublication, @FormParam("genre") String genre)
 	{
 		Book book = Book.builder()
 				.isbn13(numberProxy.generateIsbnNumbers()
-						.getIsbn13())
+								.getIsbn13())
 				.title(title)
 				.author(author)
 				.yearOfPublication(yearOfPublication)
@@ -75,8 +75,7 @@ public class BookResource
 		}
 		catch (RestBookException ex)
 		{
-			logger.error("Exception caught",
-					ex);
+			logger.error("Exception caught", ex);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
 					.entity(ex)
 					.build();
@@ -94,12 +93,10 @@ public class BookResource
 			String booksDir = "books";
 			FileSystem fileSystem = FileSystems.getDefault();
 			Files.createDirectories(fileSystem.getPath(booksDir));
-			java.nio.file.Path path = fileSystem.getPath(booksDir,
-					"book-" + Instant.now()
-							.toEpochMilli() + ".json");
-			Files.write(path,
-					jsonb.toJson(book)
-							.getBytes());
+			java.nio.file.Path path = fileSystem.getPath(booksDir, "book-" + Instant.now()
+					.toEpochMilli() + ".json");
+			Files.write(path, jsonb.toJson(book)
+					.getBytes());
 		}
 		catch (Exception ex)
 		{
